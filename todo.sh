@@ -60,7 +60,7 @@ function show(){
 		f2=`echo $line |cut -d - -f 2`
 		f3=`echo $line |cut -d - -f 3`
 		f4=`echo $line |cut -d - -f 4`
-		f2=$[f2+0]
+		#f2=$[f2+0]
 		printf "|%-8s|%-8s|%-10s|%-72s\n" ${f2} ${f3} ${f1} ${f4}
 	done < ${output_file}
 	rp '-' 8
@@ -110,15 +110,15 @@ if [ "${cmd}" = "todo" ]; then
 	todo_option=${2}
 	todo_date=`date +%Y%m%d`
 	if [ "${todo_option}" = "" ]; then
-		cat ${data_file}|grep OPEN|grep ${todo_date} >todo.tmp
+		cat ${data_file}|grep OPEN|grep ${todo_date} >${output_file}
 	elif [ "${todo_option}" = "all" ]; then
-		cat ${data_file}|grep OPEN >todo.tmp
+		cat ${data_file}|grep OPEN >${output_file}
 	else
-		cat ${data_file}|grep OPEN >todo.tmp2
-		rm -rf todo.tmp
+		cat ${data_file}|grep OPEN >${tmp_file}
+		rm -rf ${output_file}
 		while read line; do
 			d1=`echo $line |cut -d - -f 1`
-			if [ "${d1}" -ge "${todo_option}" ]; then
+			if [ "${d1}" -ge "${todo_option}" ];then
 				echo ${line} >>${output_file}
 			fi
 		done < ${tmp_file}
@@ -148,7 +148,7 @@ if [ "${cmd}" = "show" ]; then
 		cat ${data_file} >${output_file}
 	else
 		cat ${data_file} >${tmp_file}
-		rm -rf todo.tmp
+		echo "" >${output_file}
 		while read line; do
 			d1=`echo $line |cut -d - -f 1`
 			if [ "${d1}" -ge "${todo_option}" ]; then
